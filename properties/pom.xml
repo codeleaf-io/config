@@ -1,0 +1,23 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.codeleaf.config</groupId>
+        <artifactId>config</artifactId>
+        <version>0.1.0</version>
+    </parent>
+
+    <artifactId>config-properties</artifactId>
+
+    <name>Config :: Properties</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>config-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
