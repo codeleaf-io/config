@@ -69,14 +69,14 @@ public interface ConfigurationProvider {
      * @param configurationTypeClass the type class of the configuration to load
      * @param <T>                    the type of the configuration
      * @return the configuration of the specified type
-     * @throws ConfigurationNotFoundException when no {@link io.codeleaf.config.ext.ConfigurationFactory} is registered for the specified type
+     * @throws ConfigurationNotFoundException when no {@link io.codeleaf.config.spi.ConfigurationFactory} is registered for the specified type
      * @throws SpecificationNotFoundException when the {@link io.codeleaf.config.spec.Specification} could not be loaded
      * @throws IOException                    when an exception occurred during opening or reading the {@link io.codeleaf.config.spec.Specification} or initialization of the specific configuration
      * @throws SpecificationFormatException   when the {@link io.codeleaf.config.spec.Specification} has an invalid format
      * @throws InvalidSpecificationException  when the {@link io.codeleaf.config.spec.Specification} has invalid fields or field values
-     * @see io.codeleaf.config.ext.ConfigurationFactory
+     * @see io.codeleaf.config.spi.ConfigurationFactory
      * @see io.codeleaf.config.spec.Specification
-     * @see io.codeleaf.config.spec.ext.SpecificationLoader
+     * @see io.codeleaf.config.spec.spi.SpecificationLoader
      */
     <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException;
 

@@ -4,7 +4,7 @@ package io.codeleaf.config;
  * Thrown when no <code>ConfigurationFactory</code> is present that can create the specified type.
  *
  * @author tvburger@gmail.com
- * @see io.codeleaf.config.ext.ConfigurationFactory
+ * @see io.codeleaf.config.spi.ConfigurationFactory
  * @since 0.1.0
  */
 public class ConfigurationNotFoundException extends ConfigurationException {

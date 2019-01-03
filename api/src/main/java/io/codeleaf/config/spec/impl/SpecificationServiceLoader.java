@@ -1,16 +1,28 @@
 package io.codeleaf.config.spec.impl;
 
-import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.Specification;
 import io.codeleaf.config.spec.SpecificationFormatException;
+import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.SpecificationProvider;
-import io.codeleaf.config.spec.ext.SpecificationLoader;
+import io.codeleaf.config.spec.spi.SpecificationLoader;
 
 import java.io.IOException;
 import java.util.ServiceLoader;
 
+/**
+ * Implements a specification provider using the java service loader mechanism.
+ *
+ * @author tvburger@gmail.com
+ * @since 0.1.0
+ */
 public final class SpecificationServiceLoader implements SpecificationProvider {
 
+    /**
+     * Creates a new instance that leverages the java service loader.
+     *
+     * @return the new instance
+     * @see ServiceLoader#load(Class)
+     */
     public static SpecificationServiceLoader create() {
         return new SpecificationServiceLoader(ServiceLoader.load(SpecificationLoader.class));
     }
@@ -21,6 +33,9 @@ public final class SpecificationServiceLoader implements SpecificationProvider {
         this.serviceLoader = serviceLoader;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasSpecification(String specificationName) {
         synchronized (serviceLoader) {
@@ -33,6 +48,9 @@ public final class SpecificationServiceLoader implements SpecificationProvider {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Specification getSpecification(String specificationName) throws SpecificationNotFoundException, IOException, SpecificationFormatException {
         synchronized (serviceLoader) {

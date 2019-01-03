@@ -2,6 +2,12 @@ package io.codeleaf.config.spec;
 
 import io.codeleaf.config.ConfigurationException;
 
+/**
+ * Thrown if a specification is in an invalid format, and thus settings can't be read.
+ *
+ * @author tvburger@gmail.com
+ * @since 0.1.0
+ */
 public class SpecificationFormatException extends ConfigurationException {
 
     private final String specificationName;
@@ -25,6 +31,11 @@ public class SpecificationFormatException extends ConfigurationException {
         this.specificationName = specificationName;
     }
 
+    /**
+     * Returns the name of the specification that was in an invalid format
+     *
+     * @return the name of the specification that was in an invalid format
+     */
     public String getSpecificationName() {
         return specificationName;
     }

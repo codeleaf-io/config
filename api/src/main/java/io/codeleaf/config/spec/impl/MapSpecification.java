@@ -7,8 +7,20 @@ import io.codeleaf.config.util.Settings;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Implementation of a specification using a map.
+ *
+ * @author tvburger@gmail.com
+ * @since 0.1.0
+ */
 public final class MapSpecification implements Specification, Serializable {
 
+    /**
+     * Creates a new instance containing the same settings as the specified settingsMap
+     *
+     * @param settingsMap the specification settings to include
+     * @return the newly created instance
+     */
     public static MapSpecification create(Map<List<String>, Object> settingsMap) {
         Objects.requireNonNull(settingsMap);
         Map<List<String>, Object> clonedSettingsMap = new LinkedHashMap<>();
@@ -18,6 +30,12 @@ public final class MapSpecification implements Specification, Serializable {
         return new MapSpecification(Collections.unmodifiableMap(clonedSettingsMap));
     }
 
+    /**
+     * Creates a new instance containing the same settings as the specified specification
+     *
+     * @param specification the specification settings to include
+     * @return the newly created instance
+     */
     public static MapSpecification create(Specification specification) {
         Objects.requireNonNull(specification);
         Map<List<String>, Object> settingsMap = new LinkedHashMap<>();
@@ -89,11 +107,17 @@ public final class MapSpecification implements Specification, Serializable {
         this.settingsMap = settingsMap;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterator<Setting> iterator() {
         return new SettingIterator(Collections.emptyList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasSetting(List<String> field) {
         for (Setting setting : getSettings(field)) {
@@ -104,6 +128,9 @@ public final class MapSpecification implements Specification, Serializable {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<List<String>> getDefined(List<String> fieldPrefix) {
         Set<String> nextLevelNames = new LinkedHashSet<>();
@@ -122,11 +149,17 @@ public final class MapSpecification implements Specification, Serializable {
         return fieldNames;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Setting> getSettings(List<String> fieldPrefix) {
         return new SettingIterable(fieldPrefix);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Setting getSetting(List<String> field) throws SettingNotFoundException {
         for (Setting setting : getSettings(field)) {

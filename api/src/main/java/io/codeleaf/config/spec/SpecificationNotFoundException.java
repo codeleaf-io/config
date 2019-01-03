@@ -2,6 +2,12 @@ package io.codeleaf.config.spec;
 
 import io.codeleaf.config.ConfigurationException;
 
+/**
+ * Thrown when the specification was not found.
+ *
+ * @author tvburger@gmail.com
+ * @since 0.1.0
+ */
 public class SpecificationNotFoundException extends ConfigurationException {
 
     private final String specificationName;
@@ -25,6 +31,11 @@ public class SpecificationNotFoundException extends ConfigurationException {
         this.specificationName = specificationName;
     }
 
+    /**
+     * Returns the name of the specification that was not found
+     *
+     * @return the name of the specification that was not found
+     */
     public String getSpecificationName() {
         return specificationName;
     }

@@ -1,5 +1,11 @@
 package io.codeleaf.config.spec;
 
+/**
+ * Thrown when a specification has a specific invalid setting.
+ *
+ * @author tvburger@gmail.com
+ * @since 0.1.0
+ */
 public class InvalidSettingException extends InvalidSpecificationException {
 
     private final Specification.Setting setting;
@@ -24,6 +30,11 @@ public class InvalidSettingException extends InvalidSpecificationException {
         this.setting = setting;
     }
 
+    /**
+     * Returns the setting that was invalid
+     *
+     * @return the setting that was invalid
+     */
     public Specification.Setting getSetting() {
         return setting;
     }

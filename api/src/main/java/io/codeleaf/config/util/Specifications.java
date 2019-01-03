@@ -6,6 +6,13 @@ import io.codeleaf.config.spec.Specification;
 
 import java.util.List;
 
+/**
+ * Provides utility methods for specifications.
+ *
+ * @author tvburger@gmail.com
+ * @see Specification
+ * @since 0.1.0
+ */
 public final class Specifications {
 
     public static int parseInt(List<String> field, Specification specification) throws SettingNotFoundException, InvalidSettingException {

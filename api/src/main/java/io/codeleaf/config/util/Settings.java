@@ -2,6 +2,13 @@ package io.codeleaf.config.util;
 
 import java.util.List;
 
+/**
+ * Provides utility classes for settings.
+ *
+ * @author tvburger@gmail.com
+ * @see io.codeleaf.config.spec.Specification.Setting
+ * @since 0.1.0
+ */
 public final class Settings {
 
     public static boolean prefixMatches(List<String> fieldPrefix, List<String> field) {
