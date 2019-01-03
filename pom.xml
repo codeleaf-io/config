@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <name>Configuration Library</name>
+    <description>Library for loading configurations</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,6 +33,11 @@
     </licenses>
 
     <developers>
+        <developer>
+            <name>Deepak Shingan</name>
+            <email>deepak.shingan@gmail.com</email>
+            <organization>Deepak Shingan</organization>
+        </developer>
         <developer>
             <name>Tom Burger</name>
             <email>tvburger@gmail.com</email>

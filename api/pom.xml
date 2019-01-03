@@ -11,6 +11,7 @@
     <artifactId>config-api</artifactId>
 
     <name>Config :: API</name>
+    <description>Interface to the Configuration Library</description>
 
     <dependencies>
         <dependency>

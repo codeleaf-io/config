@@ -1,7 +1,7 @@
 package io.codeleaf.config.properties;
 
-import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.Specification;
+import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.ext.SpecificationLoader;
 
 import java.io.File;
@@ -13,19 +13,21 @@ public final class PropertiesFileLoader implements SpecificationLoader {
 
     private static final PropertiesSpecificationParser PARSER = new PropertiesSpecificationParser();
 
-    public static PropertiesFileLoader create(File parentPath) {
-        if (!parentPath.isDirectory()) {
-            throw new IllegalArgumentException();
-        }
-        return new PropertiesFileLoader(parentPath, PARSER);
-    }
-
     public static File getDefaultDir() {
         File file = new File(System.getProperty("config.dir", System.getProperty("user.dir")));
-        if (!file.isDirectory()) {
-            throw new IllegalArgumentException();
-        }
+        requireDirectory(file);
         return file;
+    }
+
+    private static void requireDirectory(File file) {
+        if (!file.isDirectory()) {
+            throw new IllegalArgumentException("Not a directory: " + file.getAbsolutePath());
+        }
+    }
+
+    public static PropertiesFileLoader create(File parentPath) {
+        requireDirectory(parentPath);
+        return new PropertiesFileLoader(parentPath, PARSER);
     }
 
     public PropertiesFileLoader() {

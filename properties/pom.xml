@@ -11,6 +11,7 @@
     <artifactId>config-properties</artifactId>
 
     <name>Config :: Properties</name>
+    <description>Specification loader for java properties files</description>
 
     <dependencies>
         <dependency>
