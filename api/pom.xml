@@ -1,0 +1,29 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.codeleaf.config</groupId>
+        <artifactId>config</artifactId>
+        <version>0.1.0</version>
+    </parent>
+
+    <artifactId>config-api</artifactId>
+
+    <name>Config :: API</name>
+    <description>Interface to the Configuration Library</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.codeleaf.common</groupId>
+            <artifactId>common-behaviors</artifactId>
+            <version>${leaf-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.codeleaf.common</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>${leaf-common.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
