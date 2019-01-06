@@ -18,14 +18,40 @@ import java.util.Objects;
 public abstract class AbstractConfigurationFactory<T extends Configuration> implements ConfigurationFactory {
 
     private final Class<T> configurationTypeClass;
+    private final T defaultConfiguration;
 
     /**
-     * Constructs a configuration factory that is able to create a configuration of the specified type
+     * Constructs a configuration factory that is able to create a configuration of the specified type but does
+     * not support a default configuration.
      *
      * @param configurationTypeClass the type of configuration that is supported
      */
     public AbstractConfigurationFactory(Class<T> configurationTypeClass) {
+        this(configurationTypeClass, null);
+    }
+
+    /**
+     * Constructs a configuration factory that has a default configuration as specified by
+     * <code>defaultConfiguration</code> and can create them from specification.
+     * The supported configuration type class is <code>defaultConfiguration.getClass()</code>.
+     *
+     * @param defaultConfiguration the default configuration
+     */
+    @SuppressWarnings("unchecked")
+    public AbstractConfigurationFactory(T defaultConfiguration) {
+        this((Class<T>) defaultConfiguration.getClass(), defaultConfiguration);
+    }
+
+    /**
+     * Constructs a configuration factory that is able to create a configuration of the specified type and has
+     * as the default configuration as specified by <code>defaultConfiguration</code>.
+     *
+     * @param configurationTypeClass the type of configuration that is supported
+     * @param defaultConfiguration   the default configuration
+     */
+    public AbstractConfigurationFactory(Class<T> configurationTypeClass, T defaultConfiguration) {
         this.configurationTypeClass = configurationTypeClass;
+        this.defaultConfiguration = defaultConfiguration;
     }
 
     /**
@@ -38,23 +64,25 @@ public abstract class AbstractConfigurationFactory<T extends Configuration> impl
     protected abstract T parseConfiguration(Specification specification) throws InvalidSpecificationException;
 
     /**
-     * Returns <code>true</code> if a default configuration is support. The provided behavior does not provide
-     * this, and thus returns <code>false</code>.
+     * Returns <code>true</code> if a default configuration was specified in the constructor.
      *
-     * @return <code>false</code> if the method has not been overwritten
+     * @return <code>true</code> if a default configuration is support
      */
     protected boolean supportsDefaultConfiguration() {
-        return false;
+        return defaultConfiguration != null;
     }
 
     /**
-     * Returns the default configuration. The provided behavior does not provide this, and thus throws an exception.
+     * Returns the default configuration when provided in the constructor.
      *
-     * @return never unless the method has been overwritten
-     * @throws ConfigurationNotFoundException if the method has not been overwritten
+     * @return the default configuration
+     * @throws ConfigurationNotFoundException if no default configuration was specified
      */
     protected T getDefaultConfiguration() throws ConfigurationNotFoundException {
-        throw new ConfigurationNotFoundException(configurationTypeClass);
+        if (!supportsDefaultConfiguration()) {
+            throw new ConfigurationNotFoundException(configurationTypeClass);
+        }
+        return defaultConfiguration;
     }
 
     /**
