@@ -1,0 +1,24 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.codeleaf.config</groupId>
+        <artifactId>config</artifactId>
+        <version>0.1.0</version>
+    </parent>
+
+    <artifactId>json-properties</artifactId>
+
+    <name>Config :: JSON</name>
+    <description>Specification loader for json files</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>config-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

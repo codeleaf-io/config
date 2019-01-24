@@ -20,6 +20,7 @@
     <modules>
         <module>api</module>
         <module>properties</module>
+        <module>json</module>
     </modules>
 
     <developers>
