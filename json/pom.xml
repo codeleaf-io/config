@@ -13,11 +13,20 @@
     <name>Config :: JSON</name>
     <description>Specification loader for json files</description>
 
+    <properties>
+        <jackson.version>2.9.8</jackson.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>config-api</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 
