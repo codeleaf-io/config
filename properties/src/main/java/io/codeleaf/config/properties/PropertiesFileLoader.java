@@ -1,9 +1,12 @@
 package io.codeleaf.config.properties;
 
 import io.codeleaf.config.spec.Specification;
+import io.codeleaf.config.spec.SpecificationFormatException;
 import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.spi.SpecificationLoader;
 import io.codeleaf.config.util.ConfigDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileReader;
@@ -21,6 +24,8 @@ import java.util.Properties;
  */
 public final class PropertiesFileLoader implements SpecificationLoader {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesFileLoader.class);
+
     private final File parentPath;
     private final PropertiesSpecificationParser parser;
 
@@ -33,13 +38,19 @@ public final class PropertiesFileLoader implements SpecificationLoader {
      * {@inheritDoc}
      */
     @Override
-    public Specification loadSpecification(String specificationName) throws SpecificationNotFoundException, IOException {
+    public Specification loadSpecification(String specificationName) throws SpecificationNotFoundException, IOException, SpecificationFormatException {
+        LOGGER.debug("Specification location: " + getConfigurationFile(specificationName).getAbsolutePath());
         if (!hasSpecification(specificationName)) {
             throw new SpecificationNotFoundException(specificationName);
         }
-        Properties properties = new Properties();
-        properties.load(new FileReader(getConfigurationFile(specificationName)));
-        return parser.parseSpecification(properties);
+        try {
+            Properties properties = new Properties();
+            properties.load(new FileReader(getConfigurationFile(specificationName)));
+            return parser.parseSpecification(properties);
+        } catch (IllegalArgumentException cause) {
+            LOGGER.debug("Specification loading error: " + cause.getMessage());
+            throw new SpecificationFormatException(specificationName, cause);
+        }
     }
 
     /**

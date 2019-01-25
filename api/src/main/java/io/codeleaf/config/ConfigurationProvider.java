@@ -17,34 +17,6 @@ import java.io.IOException;
 public interface ConfigurationProvider {
 
     /**
-     * Holder for a singleton, to obtain the singleton, use {@link ConfigurationProvider#get()}
-     */
-    final class Holder {
-
-        private static ConfigurationProvider INSTANCE;
-
-        static {
-            init();
-        }
-
-        private static void init() {
-            try {
-                INSTANCE = ConfigurationCache.create(ConfigurationServiceLoader.create());
-            } catch (Exception cause) {
-                throw new ExceptionInInitializerError(cause);
-            }
-        }
-
-        private static ConfigurationProvider get() {
-            return INSTANCE;
-        }
-
-        private Holder() {
-        }
-
-    }
-
-    /**
      * Returns a ConfigurationProvider to load configurations
      *
      * @return a ConfigurationProvider
@@ -80,4 +52,30 @@ public interface ConfigurationProvider {
      */
     <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException;
 
+    /**
+     * Holder for a singleton, to obtain the singleton, use {@link ConfigurationProvider#get()}
+     */
+    final class Holder {
+
+        private Holder() {
+        }
+
+        private static ConfigurationProvider INSTANCE;
+
+        static {
+            init();
+        }
+
+        private static void init() {
+            try {
+                INSTANCE = ConfigurationCache.create(ConfigurationServiceLoader.create());
+            } catch (Exception cause) {
+                throw new ExceptionInInitializerError(cause);
+            }
+        }
+
+        private static ConfigurationProvider get() {
+            return INSTANCE;
+        }
+    }
 }

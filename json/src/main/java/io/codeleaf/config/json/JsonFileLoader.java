@@ -9,6 +9,8 @@ import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.impl.MapSpecification;
 import io.codeleaf.config.spec.spi.SpecificationLoader;
 import io.codeleaf.config.util.ConfigDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,8 @@ import java.util.Map;
  */
 public final class JsonFileLoader implements SpecificationLoader {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonFileLoader.class);
+
     private final File parentPath;
     private final ObjectMapper objectMapper;
 
@@ -38,6 +42,7 @@ public final class JsonFileLoader implements SpecificationLoader {
      */
     @Override
     public Specification loadSpecification(String specificationName) throws SpecificationNotFoundException, IOException, SpecificationFormatException {
+        LOGGER.debug("Specification location: " + getConfigurationFile(specificationName).getAbsolutePath());
         if (!hasSpecification(specificationName)) {
             throw new SpecificationNotFoundException(specificationName);
         }
@@ -45,6 +50,7 @@ public final class JsonFileLoader implements SpecificationLoader {
             Map<?, ?> map = objectMapper.readValue(getConfigurationFile(specificationName), Map.class);
             return MapSpecification.create(MapSpecification.normalize(map));
         } catch (JsonParseException | JsonMappingException | IllegalArgumentException cause) {
+            LOGGER.debug("Specification loading error: " + cause.getMessage());
             throw new SpecificationFormatException(specificationName, cause);
         }
     }

@@ -14,39 +14,6 @@ import java.util.List;
 public interface Specification extends Iterable<Specification.Setting> {
 
     /**
-     * Represents a setting within a specification.
-     */
-    class Setting implements Serializable {
-
-        private final List<String> field;
-        private final Object value;
-
-        public Setting(List<String> field, Object value) {
-            this.field = field;
-            this.value = value;
-        }
-
-        /**
-         * Returns the field of the setting
-         *
-         * @return the field
-         */
-        public List<String> getField() {
-            return field;
-        }
-
-        /**
-         * Returns the value of the setting
-         *
-         * @return the value
-         */
-        public Object getValue() {
-            return value;
-        }
-
-    }
-
-    /**
      * Returns an iterable over the settings starting with the given field prefix.
      *
      * @param fieldPrefix the field prefix that must match to be included in the iterable
@@ -174,4 +141,36 @@ public interface Specification extends Iterable<Specification.Setting> {
         return getValue(typeClass, Arrays.asList(field));
     }
 
+    /**
+     * Represents a setting within a specification.
+     */
+    class Setting implements Serializable {
+
+        private final List<String> field;
+        private final Object value;
+
+        public Setting(List<String> field, Object value) {
+            this.field = field;
+            this.value = value;
+        }
+
+        /**
+         * Returns the field of the setting
+         *
+         * @return the field
+         */
+        public List<String> getField() {
+            return field;
+        }
+
+        /**
+         * Returns the value of the setting
+         *
+         * @return the value
+         */
+        public Object getValue() {
+            return value;
+        }
+
+    }
 }

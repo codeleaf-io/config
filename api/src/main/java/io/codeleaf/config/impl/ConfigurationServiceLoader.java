@@ -5,6 +5,8 @@ import io.codeleaf.config.ConfigurationNotFoundException;
 import io.codeleaf.config.ConfigurationProvider;
 import io.codeleaf.config.spec.*;
 import io.codeleaf.config.spi.ConfigurationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ServiceLoader;
@@ -17,16 +19,7 @@ import java.util.ServiceLoader;
  */
 public final class ConfigurationServiceLoader implements ConfigurationProvider {
 
-    /**
-     * Creates a new instance that read the specifications from the singleton service provider.
-     *
-     * @return the new instance
-     * @see ServiceLoader#load(Class)
-     * @see SpecificationProvider#get()
-     */
-    public static ConfigurationServiceLoader create() {
-        return new ConfigurationServiceLoader(ServiceLoader.load(ConfigurationFactory.class), SpecificationProvider.get());
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationServiceLoader.class);
 
     private final ServiceLoader<ConfigurationFactory> serviceLoader;
     private final SpecificationProvider specificationProvider;
@@ -68,6 +61,7 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
                     }
                 }
             }
+            LOGGER.warn("Configuration not found: " + configurationTypeClass);
             throw new ConfigurationNotFoundException(configurationTypeClass);
         }
     }
@@ -76,4 +70,14 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
         return configurationTypeClass.getName();
     }
 
+    /**
+     * Creates a new instance that read the specifications from the singleton service provider.
+     *
+     * @return the new instance
+     * @see ServiceLoader#load(Class)
+     * @see SpecificationProvider#get()
+     */
+    public static ConfigurationServiceLoader create() {
+        return new ConfigurationServiceLoader(ServiceLoader.load(ConfigurationFactory.class), SpecificationProvider.get());
+    }
 }

@@ -8,7 +8,7 @@
         <version>0.1.0</version>
     </parent>
 
-    <artifactId>json-properties</artifactId>
+    <artifactId>config-json</artifactId>
 
     <name>Config :: JSON</name>
     <description>Specification loader for json files</description>

@@ -3,6 +3,8 @@ package io.codeleaf.config.spec.impl;
 import io.codeleaf.config.spec.SettingNotFoundException;
 import io.codeleaf.config.spec.Specification;
 import io.codeleaf.config.util.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.*;
@@ -14,6 +16,8 @@ import java.util.*;
  * @since 0.1.0
  */
 public final class MapSpecification implements Specification, Serializable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapSpecification.class);
 
     private final Map<List<String>, Object> settingsMap;
 
@@ -81,6 +85,7 @@ public final class MapSpecification implements Specification, Serializable {
                 return setting;
             }
         }
+        LOGGER.warn("Setting not found: " + Settings.toString(field));
         throw new SettingNotFoundException(this, field);
     }
 

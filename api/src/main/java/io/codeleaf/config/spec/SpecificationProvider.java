@@ -14,41 +14,13 @@ import java.io.IOException;
 public interface SpecificationProvider {
 
     /**
-     * Holder for a singleton, to obtain the singleton, use {@link SpecificationProvider#get()}
-     */
-    final class Singleton {
-
-        private static SpecificationProvider INSTANCE;
-
-        static {
-            init();
-        }
-
-        private static void init() {
-            try {
-                INSTANCE = SpecificationCache.create(SpecificationServiceLoader.create());
-            } catch (Exception cause) {
-                throw new ExceptionInInitializerError(cause);
-            }
-        }
-
-        private static SpecificationProvider get() {
-            return INSTANCE;
-        }
-
-        private Singleton() {
-        }
-
-    }
-
-    /**
      * Returns a SpecificationProvider to load configurations
      *
      * @return a SpecificationProvider
      * @throws ExceptionInInitializerError if the Holder is lazy initialized and during initialization an exception was thrown
      */
     static SpecificationProvider get() {
-        return Singleton.INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**
@@ -71,4 +43,30 @@ public interface SpecificationProvider {
      */
     Specification getSpecification(String specificationName) throws SpecificationNotFoundException, IOException, SpecificationFormatException;
 
+    /**
+     * Holder for a singleton, to obtain the singleton, use {@link SpecificationProvider#get()}
+     */
+    final class Holder {
+
+        private Holder() {
+        }
+
+        private static SpecificationProvider INSTANCE;
+
+        static {
+            init();
+        }
+
+        private static void init() {
+            try {
+                INSTANCE = SpecificationCache.create(SpecificationServiceLoader.create());
+            } catch (Exception cause) {
+                throw new ExceptionInInitializerError(cause);
+            }
+        }
+
+        private static SpecificationProvider get() {
+            return INSTANCE;
+        }
+    }
 }

@@ -11,6 +11,9 @@ import java.util.List;
  */
 public final class Settings {
 
+    private Settings() {
+    }
+
     public static boolean prefixMatches(List<String> fieldPrefix, List<String> field) {
         for (int i = 0; i < fieldPrefix.size(); i++) {
             if (!fieldPrefix.get(i).equals(field.get(i))) {
@@ -32,7 +35,14 @@ public final class Settings {
         return true;
     }
 
-    private Settings() {
+    public static String toString(List<String> field) {
+        StringBuilder builder = new StringBuilder();
+        for (String part : field) {
+            if (builder.length() > 0) {
+                builder.append(".");
+            }
+            builder.append(part);
+        }
+        return builder.toString();
     }
-
 }
