@@ -1,32 +1,75 @@
 package io.codeleaf.config.json;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.codeleaf.config.spec.Specification;
 import io.codeleaf.config.spec.SpecificationFormatException;
 import io.codeleaf.config.spec.SpecificationNotFoundException;
+import io.codeleaf.config.spec.impl.MapSpecification;
 import io.codeleaf.config.spec.spi.SpecificationLoader;
+import io.codeleaf.config.util.ConfigDirectory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
+/**
+ * Implements a specification loader for json files.
+ *
+ * @author tvburger@gmail.com
+ * @see SpecificationLoader
+ * @see MapSpecification
+ * @see ObjectMapper
+ * @since 0.1.0
+ */
 public final class JsonFileLoader implements SpecificationLoader {
 
-    /**
-     * Gets the default parent directory for the properties files. This will be read from the <code>config.dir</code>
-     * system property. If this property is not defined, it will fallback to the <code>user.dir</code> system property.
-     *
-     * @return the default parent directory for reading the properties files.
-     * @see System#getProperties()
-     */
-    public static File getDefaultDir() {
-        File file = new File(System.getProperty("config.dir", System.getProperty("user.dir")));
-        requireDirectory(file);
-        return file;
+    private final File parentPath;
+    private final ObjectMapper objectMapper;
+
+    private JsonFileLoader(File parentPath, ObjectMapper objectMapper) {
+        this.parentPath = parentPath;
+        this.objectMapper = objectMapper;
     }
 
-    private static void requireDirectory(File file) {
-        if (!file.isDirectory()) {
-            throw new IllegalArgumentException("Not a directory: " + file.getAbsolutePath());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Specification loadSpecification(String specificationName) throws SpecificationNotFoundException, IOException, SpecificationFormatException {
+        if (!hasSpecification(specificationName)) {
+            throw new SpecificationNotFoundException(specificationName);
         }
+        try {
+            Map<?, ?> map = objectMapper.readValue(getConfigurationFile(specificationName), Map.class);
+            return MapSpecification.create(MapSpecification.normalize(map));
+        } catch (JsonParseException | JsonMappingException | IllegalArgumentException cause) {
+            throw new SpecificationFormatException(specificationName, cause);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasSpecification(String specificationName) {
+        return getConfigurationFile(specificationName).exists();
+    }
+
+    private File getConfigurationFile(String specificationName) {
+        return new File(parentPath.getPath(), specificationName + ".json");
+    }
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    /**
+     * Constructs a new instance that reads from the default parent directory.
+     *
+     * @see ConfigDirectory#getDefaultDir()
+     */
+    public JsonFileLoader() {
+        this(ConfigDirectory.getDefaultDir(), MAPPER);
     }
 
     /**
@@ -37,21 +80,7 @@ public final class JsonFileLoader implements SpecificationLoader {
      * @throws IllegalArgumentException if the parentPath is not a directory
      */
     public static JsonFileLoader create(File parentPath) {
-        requireDirectory(parentPath);
-        return new JsonFileLoader(parentPath);
-    }
-
-    public JsonFileLoader(File parentPath) {
-
-    }
-
-    @Override
-    public Specification loadSpecification(String specificationName) throws SpecificationNotFoundException, IOException, SpecificationFormatException {
-        return null;
-    }
-
-    @Override
-    public boolean hasSpecification(String specificationName) {
-        return false;
+        ConfigDirectory.requireAccessibleDirectory(parentPath);
+        return new JsonFileLoader(parentPath, MAPPER);
     }
 }
