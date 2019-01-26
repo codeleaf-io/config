@@ -1,8 +1,7 @@
 package io.codeleaf.config.spec;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * This represents a specification. A specification consists of a collection of settings.
@@ -12,39 +11,6 @@ import java.util.List;
  * @since 0.1.0
  */
 public interface Specification extends Iterable<Specification.Setting> {
-
-    /**
-     * Represents a setting within a specification.
-     */
-    class Setting implements Serializable {
-
-        private final List<String> field;
-        private final Object value;
-
-        public Setting(List<String> field, Object value) {
-            this.field = field;
-            this.value = value;
-        }
-
-        /**
-         * Returns the field of the setting
-         *
-         * @return the field
-         */
-        public List<String> getField() {
-            return field;
-        }
-
-        /**
-         * Returns the value of the setting
-         *
-         * @return the value
-         */
-        public Object getValue() {
-            return value;
-        }
-
-    }
 
     /**
      * Returns an iterable over the settings starting with the given field prefix.
@@ -80,6 +46,32 @@ public interface Specification extends Iterable<Specification.Setting> {
      */
     default List<List<String>> getDefined(String... fieldPrefix) {
         return getDefined(Arrays.asList(fieldPrefix));
+    }
+
+    /**
+     * Returns the next level of field part names of the corresponding settings in this specification that all start with the given field prefix.
+     *
+     * @param fieldPrefix the field prefix to match
+     * @return the next level of field part names
+     */
+    default List<String> getChilds(List<String> fieldPrefix) {
+        Set<String> childs = new LinkedHashSet<>();
+        for (List<String> defined : getDefined(fieldPrefix)) {
+            if (defined.size() > fieldPrefix.size()) {
+                childs.add(defined.get(fieldPrefix.size()));
+            }
+        }
+        return new ArrayList<>(childs);
+    }
+
+    /**
+     * Returns the next level of field part names of the corresponding settings in this specification that all start with the given field prefix.
+     *
+     * @param fieldPrefix the field prefix to match
+     * @return the next level of field part names
+     */
+    default List<String> getChilds(String... fieldPrefix) {
+        return getChilds(Arrays.asList(fieldPrefix));
     }
 
     /**
@@ -174,4 +166,36 @@ public interface Specification extends Iterable<Specification.Setting> {
         return getValue(typeClass, Arrays.asList(field));
     }
 
+    /**
+     * Represents a setting within a specification.
+     */
+    class Setting implements Serializable {
+
+        private final List<String> field;
+        private final Object value;
+
+        public Setting(List<String> field, Object value) {
+            this.field = field;
+            this.value = value;
+        }
+
+        /**
+         * Returns the field of the setting
+         *
+         * @return the field
+         */
+        public List<String> getField() {
+            return field;
+        }
+
+        /**
+         * Returns the value of the setting
+         *
+         * @return the value
+         */
+        public Object getValue() {
+            return value;
+        }
+
+    }
 }

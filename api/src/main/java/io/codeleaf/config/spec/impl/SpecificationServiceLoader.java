@@ -5,6 +5,8 @@ import io.codeleaf.config.spec.SpecificationFormatException;
 import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.SpecificationProvider;
 import io.codeleaf.config.spec.spi.SpecificationLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ServiceLoader;
@@ -17,15 +19,7 @@ import java.util.ServiceLoader;
  */
 public final class SpecificationServiceLoader implements SpecificationProvider {
 
-    /**
-     * Creates a new instance that leverages the java service loader.
-     *
-     * @return the new instance
-     * @see ServiceLoader#load(Class)
-     */
-    public static SpecificationServiceLoader create() {
-        return new SpecificationServiceLoader(ServiceLoader.load(SpecificationLoader.class));
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpecificationServiceLoader.class);
 
     private final ServiceLoader<SpecificationLoader> serviceLoader;
 
@@ -56,11 +50,22 @@ public final class SpecificationServiceLoader implements SpecificationProvider {
         synchronized (serviceLoader) {
             for (SpecificationLoader loader : serviceLoader) {
                 if (loader.hasSpecification(specificationName)) {
+                    LOGGER.debug("Loading specification: " + specificationName);
                     return loader.loadSpecification(specificationName);
                 }
             }
+            LOGGER.debug("Specification not found: " + specificationName);
             throw new SpecificationNotFoundException(specificationName);
         }
     }
 
+    /**
+     * Creates a new instance that leverages the java service loader.
+     *
+     * @return the new instance
+     * @see ServiceLoader#load(Class)
+     */
+    public static SpecificationServiceLoader create() {
+        return new SpecificationServiceLoader(ServiceLoader.load(SpecificationLoader.class));
+    }
 }
