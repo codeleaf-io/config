@@ -119,6 +119,22 @@ public final class MapSpecification implements Specification, Serializable {
         return new MapSpecification(Collections.unmodifiableMap(settingsMap));
     }
 
+    public static MapSpecification create(Specification specification, String... fieldPrefix) {
+        Objects.requireNonNull(specification);
+        Objects.requireNonNull(fieldPrefix);
+        return create(specification, Arrays.asList(fieldPrefix));
+    }
+
+    public static MapSpecification create(Specification specification, List<String> fieldPrefix) {
+        Objects.requireNonNull(specification);
+        Objects.requireNonNull(fieldPrefix);
+        Map<List<String>, Object> settingsMap = new LinkedHashMap<>();
+        for (Setting setting : specification.getSettings(fieldPrefix)) {
+            settingsMap.put(setting.getField().subList(fieldPrefix.size(), setting.getField().size()), setting.getValue());
+        }
+        return new MapSpecification(Collections.unmodifiableMap(settingsMap));
+    }
+
     /**
      * Normalizes the map. That means that inner maps are removed and extra entries using a list of keys is created
      * within the new map.

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
@@ -49,6 +50,7 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
      */
     @Override
     public <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
+        Objects.requireNonNull(configurationTypeClass);
         synchronized (serviceLoader) {
             for (ConfigurationFactory factory : serviceLoader) {
                 if (factory.supportsConfiguration(configurationTypeClass)) {
@@ -56,14 +58,36 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
                     if (specificationProvider.hasSpecification(specificationName)) {
                         Specification specification = specificationProvider.getSpecification(toSpecificationName(configurationTypeClass));
                         return factory.createConfiguration(specification, configurationTypeClass);
-                    } else if (factory.supportsDefaultConfiguration(configurationTypeClass)) {
-                        return factory.createDefaultConfiguration(configurationTypeClass);
+                    } else {
+                        LOGGER.debug("No specification found for: " + specificationName);
+                        if (factory.supportsDefaultConfiguration(configurationTypeClass)) {
+                            LOGGER.debug("Creating default configuration for: " + configurationTypeClass);
+                            return factory.createDefaultConfiguration(configurationTypeClass);
+                        }
                     }
                 }
             }
             LOGGER.warn("Configuration not found: " + configurationTypeClass);
             throw new ConfigurationNotFoundException(configurationTypeClass);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification) throws ConfigurationNotFoundException, InvalidSpecificationException {
+        Objects.requireNonNull(configurationTypeClass);
+        Objects.requireNonNull(specification);
+        synchronized (serviceLoader) {
+            for (ConfigurationFactory factory : serviceLoader) {
+                if (factory.supportsConfiguration(configurationTypeClass)) {
+                    return factory.createConfiguration(specification, configurationTypeClass);
+                }
+            }
+        }
+        LOGGER.warn("Configuration not found: " + configurationTypeClass);
+        throw new ConfigurationNotFoundException(configurationTypeClass);
     }
 
     private <T extends Configuration> String toSpecificationName(Class<T> configurationTypeClass) {

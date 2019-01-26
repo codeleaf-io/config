@@ -1,8 +1,7 @@
 package io.codeleaf.config.spec;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * This represents a specification. A specification consists of a collection of settings.
@@ -47,6 +46,32 @@ public interface Specification extends Iterable<Specification.Setting> {
      */
     default List<List<String>> getDefined(String... fieldPrefix) {
         return getDefined(Arrays.asList(fieldPrefix));
+    }
+
+    /**
+     * Returns the next level of field part names of the corresponding settings in this specification that all start with the given field prefix.
+     *
+     * @param fieldPrefix the field prefix to match
+     * @return the next level of field part names
+     */
+    default List<String> getChilds(List<String> fieldPrefix) {
+        Set<String> childs = new LinkedHashSet<>();
+        for (List<String> defined : getDefined(fieldPrefix)) {
+            if (defined.size() > fieldPrefix.size()) {
+                childs.add(defined.get(fieldPrefix.size()));
+            }
+        }
+        return new ArrayList<>(childs);
+    }
+
+    /**
+     * Returns the next level of field part names of the corresponding settings in this specification that all start with the given field prefix.
+     *
+     * @param fieldPrefix the field prefix to match
+     * @return the next level of field part names
+     */
+    default List<String> getChilds(String... fieldPrefix) {
+        return getChilds(Arrays.asList(fieldPrefix));
     }
 
     /**
