@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,7 +48,7 @@ public final class JsonFileLoader implements SpecificationLoader {
             throw new SpecificationNotFoundException(specificationName);
         }
         try {
-            Map<?, ?> map = objectMapper.readValue(getConfigurationFile(specificationName), Map.class);
+            Map<?, ?> map = objectMapper.readValue(getConfigurationFile(specificationName), LinkedHashMap.class);
             return MapSpecification.create(MapSpecification.normalize(map));
         } catch (JsonParseException | JsonMappingException | IllegalArgumentException cause) {
             LOGGER.debug("Specification loading error: " + cause.getMessage());

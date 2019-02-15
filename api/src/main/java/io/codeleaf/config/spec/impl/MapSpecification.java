@@ -146,7 +146,7 @@ public final class MapSpecification implements Specification, Serializable {
      */
     public static Map<List<String>, Object> normalize(Map<?, ?> map) {
         Objects.requireNonNull(map);
-        Map<List<String>, Object> normalizedMap = new HashMap<>();
+        Map<List<String>, Object> normalizedMap = new LinkedHashMap<>();
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             if (!(entry.getKey() instanceof String)) {
                 throw new IllegalArgumentException();
