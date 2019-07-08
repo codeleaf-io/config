@@ -64,7 +64,9 @@ public final class JsonFileLoader implements SpecificationLoader {
     }
 
     private File getConfigurationFile(String specificationName) {
-        return new File(parentPath.getPath(), specificationName + ".json");
+        File file = new File(parentPath.getPath(), specificationName + ".json");
+        System.out.println("Considering json file: " + file.getAbsolutePath());
+        return file;
     }
 
     private static final ObjectMapper MAPPER = new ObjectMapper();

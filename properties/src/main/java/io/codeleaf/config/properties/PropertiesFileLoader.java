@@ -62,7 +62,9 @@ public final class PropertiesFileLoader implements SpecificationLoader {
     }
 
     private File getConfigurationFile(String specificationName) {
-        return new File(parentPath.getPath(), specificationName + ".properties");
+        File file = new File(parentPath.getPath(), specificationName + ".properties");
+        System.out.println("Considering properties file: " + file.getAbsolutePath());
+        return file;
     }
 
     private static final PropertiesSpecificationParser PARSER = new PropertiesSpecificationParser();
