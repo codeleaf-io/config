@@ -12,8 +12,7 @@ import io.codeleaf.config.util.ConfigDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 
 /**
@@ -46,8 +45,24 @@ public final class JsonFileLoader implements SpecificationLoader {
         if (!hasSpecification(specificationName)) {
             throw new SpecificationNotFoundException(specificationName);
         }
+        try (InputStream in = new FileInputStream(getConfigurationFile(specificationName))) {
+            return doParseSpecification(in, specificationName);
+        }
+    }
+
+    public Specification parseSpecification(InputStream in) throws IOException, SpecificationFormatException {
+        return doParseSpecification(in, "<InputStream>");
+    }
+
+    public Specification parseSpecification(String value) throws IOException, SpecificationFormatException {
+        try (InputStream in = new ByteArrayInputStream(value.getBytes())) {
+            return doParseSpecification(in, "<String>");
+        }
+    }
+
+    private Specification doParseSpecification(InputStream in, String specificationName) throws IOException, SpecificationFormatException {
         try {
-            Map<?, ?> map = objectMapper.readValue(getConfigurationFile(specificationName), Map.class);
+            Map<?, ?> map = objectMapper.readValue(in, Map.class);
             return MapSpecification.create(MapSpecification.normalize(map));
         } catch (JsonParseException | JsonMappingException | IllegalArgumentException cause) {
             LOGGER.debug("Specification loading error: " + cause.getMessage());
@@ -65,7 +80,7 @@ public final class JsonFileLoader implements SpecificationLoader {
 
     private File getConfigurationFile(String specificationName) {
         File file = new File(parentPath.getPath(), specificationName + ".json");
-        System.out.println("Considering json file: " + file.getAbsolutePath());
+        LOGGER.debug("Considering json file: " + file.getAbsolutePath());
         return file;
     }
 
