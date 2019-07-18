@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -63,7 +62,7 @@ public final class PropertiesFileLoader implements SpecificationLoader {
 
     private File getConfigurationFile(String specificationName) {
         File file = new File(parentPath.getPath(), specificationName + ".properties");
-        System.out.println("Considering properties file: " + file.getAbsolutePath());
+        LOGGER.debug("Considering properties file: " + file.getAbsolutePath());
         return file;
     }
 
