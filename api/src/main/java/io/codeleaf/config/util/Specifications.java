@@ -1,12 +1,11 @@
 package io.codeleaf.config.util;
 
+import io.codeleaf.common.utils.StringEncoder;
 import io.codeleaf.config.spec.InvalidSettingException;
 import io.codeleaf.config.spec.SettingNotFoundException;
 import io.codeleaf.config.spec.Specification;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Provides utility methods for specifications.
@@ -59,6 +58,24 @@ public final class Specifications {
         } catch (NumberFormatException cause) {
             throw new InvalidSettingException(specification, specification.getSetting(field));
         }
+    }
+
+    public static Set<String> parseSet(Specification specification, String... field) throws SettingNotFoundException {
+        return parseSet(specification, Arrays.asList(field));
+    }
+
+    public static Set<String> parseSet(Specification specification, List<String> field) throws SettingNotFoundException {
+        return Collections.unmodifiableSet(new LinkedHashSet<>(
+                StringEncoder.decodeList(
+                        Specifications.parseString(specification, field))));
+    }
+
+    public static List<String> parseList(Specification specification, String... field) throws SettingNotFoundException {
+        return parseList(specification, Arrays.asList(field));
+    }
+
+    public static List<String> parseList(Specification specification, List<String> field) throws SettingNotFoundException {
+        return Collections.unmodifiableList(StringEncoder.decodeList(Specifications.parseString(specification, field)));
     }
 
     private Specifications() {

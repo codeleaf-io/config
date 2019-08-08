@@ -46,11 +46,27 @@ public final class ConfigurationCache implements ConfigurationProvider {
      */
     @Override
     public <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
+        return doGetConfiguration(configurationTypeClass, false, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass, Object context) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
+        return doGetConfiguration(configurationTypeClass, true, context);
+    }
+
+    private <T extends Configuration> T doGetConfiguration(Class<T> configurationTypeClass, boolean withContext, Object context) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
         Objects.requireNonNull(configurationTypeClass);
         Configuration configuration;
         if (!cache.has(configurationTypeClass)) {
             LOGGER.debug("Cache miss for: " + configurationTypeClass);
-            configuration = provider.getConfiguration(configurationTypeClass);
+            if (withContext) {
+                configuration = provider.getConfiguration(configurationTypeClass);
+            } else {
+                configuration = provider.getConfiguration(configurationTypeClass, context);
+            }
             cache.put(configurationTypeClass, configuration);
         } else {
             LOGGER.debug("Cache hit for: " + configurationTypeClass);
@@ -65,6 +81,14 @@ public final class ConfigurationCache implements ConfigurationProvider {
     @Override
     public <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification) throws ConfigurationNotFoundException, InvalidSpecificationException {
         return provider.parseConfiguration(configurationTypeClass, specification);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification, Object context) throws ConfigurationNotFoundException, InvalidSpecificationException {
+        return provider.parseConfiguration(configurationTypeClass, specification, context);
     }
 
     /**

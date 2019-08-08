@@ -106,6 +106,14 @@ public abstract class AbstractConfigurationFactory<T extends Configuration> impl
      * {@inheritDoc}
      */
     @Override
+    public <S extends Configuration> S createConfiguration(Specification specification, Class<S> configurationTypeClass, Object context) throws InvalidSpecificationException {
+        return createConfiguration(specification, configurationTypeClass);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final <S extends Configuration> boolean supportsDefaultConfiguration(Class<S> configurationTypeClass) {
         assertType(configurationTypeClass);
         return supportsDefaultConfiguration();
@@ -120,7 +128,7 @@ public abstract class AbstractConfigurationFactory<T extends Configuration> impl
         return configurationTypeClass.cast(getDefaultConfiguration());
     }
 
-    private <S extends Configuration> void assertType(Class<S> configurationTypeClass) {
+    protected final <S extends Configuration> void assertType(Class<S> configurationTypeClass) {
         if (!supportsConfiguration(configurationTypeClass)) {
             throw new IllegalArgumentException();
         }

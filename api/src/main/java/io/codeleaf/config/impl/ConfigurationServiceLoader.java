@@ -50,6 +50,18 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
      */
     @Override
     public <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
+        return doGetConfiguration(configurationTypeClass, false, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass, Object context) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
+        return doGetConfiguration(configurationTypeClass, true, context);
+    }
+
+    private <T extends Configuration> T doGetConfiguration(Class<T> configurationTypeClass, boolean withContext, Object context) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException {
         Objects.requireNonNull(configurationTypeClass);
         synchronized (serviceLoader) {
             for (ConfigurationFactory factory : serviceLoader) {
@@ -57,7 +69,9 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
                     String specificationName = toSpecificationName(configurationTypeClass);
                     if (specificationProvider.hasSpecification(specificationName)) {
                         Specification specification = specificationProvider.getSpecification(toSpecificationName(configurationTypeClass));
-                        return factory.createConfiguration(specification, configurationTypeClass);
+                        return withContext
+                                ? factory.createConfiguration(specification, configurationTypeClass, context)
+                                : factory.createConfiguration(specification, configurationTypeClass);
                     } else {
                         LOGGER.debug("No specification found for: " + specificationName);
                         if (factory.supportsDefaultConfiguration(configurationTypeClass)) {
@@ -77,12 +91,26 @@ public final class ConfigurationServiceLoader implements ConfigurationProvider {
      */
     @Override
     public <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification) throws ConfigurationNotFoundException, InvalidSpecificationException {
+        return doParseConfiguration(configurationTypeClass, specification, false, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification, Object context) throws ConfigurationNotFoundException, InvalidSpecificationException {
+        return doParseConfiguration(configurationTypeClass, specification, true, context);
+    }
+
+    private <T extends Configuration> T doParseConfiguration(Class<T> configurationTypeClass, Specification specification, boolean withContext, Object context) throws ConfigurationNotFoundException, InvalidSpecificationException {
         Objects.requireNonNull(configurationTypeClass);
         Objects.requireNonNull(specification);
         synchronized (serviceLoader) {
             for (ConfigurationFactory factory : serviceLoader) {
                 if (factory.supportsConfiguration(configurationTypeClass)) {
-                    return factory.createConfiguration(specification, configurationTypeClass);
+                    return withContext
+                            ? factory.createConfiguration(specification, configurationTypeClass, context)
+                            : factory.createConfiguration(specification, configurationTypeClass);
                 }
             }
         }

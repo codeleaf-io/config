@@ -54,6 +54,8 @@ public interface ConfigurationProvider {
      */
     <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException;
 
+    <T extends Configuration> T getConfiguration(Class<T> configurationTypeClass, Object context) throws ConfigurationNotFoundException, SpecificationNotFoundException, IOException, SpecificationFormatException, InvalidSpecificationException;
+
     /**
      * Parses the specification into a configuration of the specified type.
      *
@@ -69,6 +71,8 @@ public interface ConfigurationProvider {
      * @see io.codeleaf.config.spec.spi.SpecificationLoader
      */
     <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification) throws ConfigurationNotFoundException, InvalidSpecificationException;
+
+    <T extends Configuration> T parseConfiguration(Class<T> configurationTypeClass, Specification specification, Object context) throws ConfigurationNotFoundException, InvalidSpecificationException;
 
     /**
      * Holder for a singleton, to obtain the singleton, use {@link ConfigurationProvider#get()}

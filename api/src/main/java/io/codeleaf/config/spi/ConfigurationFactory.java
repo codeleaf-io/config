@@ -33,6 +33,8 @@ public interface ConfigurationFactory {
      */
     <T extends Configuration> T createConfiguration(Specification specification, Class<T> configurationTypeClass) throws InvalidSpecificationException;
 
+    <T extends Configuration> T createConfiguration(Specification specification, Class<T> configurationTypeClass, Object context) throws InvalidSpecificationException;
+
     /**
      * Returns <code>true</code> if the specified type is supported by this factory and has a default configuration, otherwise <code>false</code>.
      * The default configuration is called when supported and no specification has been found.
