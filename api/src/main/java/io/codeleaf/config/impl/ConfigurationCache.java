@@ -63,9 +63,9 @@ public final class ConfigurationCache implements ConfigurationProvider {
         if (!cache.has(configurationTypeClass)) {
             LOGGER.debug("Cache miss for: " + configurationTypeClass);
             if (withContext) {
-                configuration = provider.getConfiguration(configurationTypeClass);
-            } else {
                 configuration = provider.getConfiguration(configurationTypeClass, context);
+            } else {
+                configuration = provider.getConfiguration(configurationTypeClass);
             }
             cache.put(configurationTypeClass, configuration);
         } else {
