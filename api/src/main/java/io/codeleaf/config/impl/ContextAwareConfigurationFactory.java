@@ -60,7 +60,7 @@ public abstract class ContextAwareConfigurationFactory<T extends Configuration, 
      * {@inheritDoc}
      */
     protected T parseConfiguration(Specification specification) throws InvalidSpecificationException {
-        return parseConfiguration(specification, defaultContextProvider.get());
+        return parseConfiguration(specification, defaultContextProvider == null ? null : defaultContextProvider.get());
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class ContextAwareConfigurationFactory<T extends Configuration, 
         if (context != null && !contextTypeClass.isInstance(context)) {
             throw new IllegalArgumentException("Invalid context type: " + context.getClass());
         }
-        return configurationTypeClass.cast(parseConfiguration(specification, context == null ? defaultContextProvider.get() : (C) context));
+        return configurationTypeClass.cast(parseConfiguration(specification, context == null && defaultContextProvider != null ? defaultContextProvider.get() : (C) context));
     }
 
 }

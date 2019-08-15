@@ -1,5 +1,7 @@
 package io.codeleaf.config.spec;
 
+import io.codeleaf.config.util.Settings;
+
 import java.util.List;
 
 /**
@@ -13,22 +15,22 @@ public class SettingNotFoundException extends InvalidSpecificationException {
     private final List<String> settingField;
 
     public SettingNotFoundException(Specification configurationSpecification, List<String> settingField) {
-        super(configurationSpecification);
+        super(configurationSpecification, createMessage(settingField, null));
         this.settingField = settingField;
     }
 
     public SettingNotFoundException(Specification configurationSpecification, List<String> settingField, String message) {
-        super(configurationSpecification, message);
+        super(configurationSpecification, createMessage(settingField, message));
         this.settingField = settingField;
     }
 
     public SettingNotFoundException(Specification configurationSpecification, List<String> settingField, String message, Throwable cause) {
-        super(configurationSpecification, message, cause);
+        super(configurationSpecification, createMessage(settingField, message), cause);
         this.settingField = settingField;
     }
 
     public SettingNotFoundException(Specification configurationSpecification, List<String> settingField, Throwable cause) {
-        super(configurationSpecification, cause);
+        super(configurationSpecification, createMessage(settingField, cause == null ? null : cause.getMessage()), cause);
         this.settingField = settingField;
     }
 
@@ -39,6 +41,19 @@ public class SettingNotFoundException extends InvalidSpecificationException {
      */
     public List<String> getSettingField() {
         return settingField;
+    }
+
+    private static String createMessage(List<String> settingField, String message) {
+        StringBuilder sb = new StringBuilder("No setting found: ");
+        if (settingField.isEmpty()) {
+            sb.append("<null>");
+        } else {
+            sb.append(Settings.toString(settingField));
+        }
+        if (message != null) {
+            sb.append(": " + message);
+        }
+        return sb.toString();
     }
 
 }

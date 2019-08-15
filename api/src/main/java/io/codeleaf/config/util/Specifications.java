@@ -139,7 +139,12 @@ public final class Specifications {
                     parseClass(specification, Configuration.class, add(field, "type")),
                     parseSpecification(specification, add(field, "settings")));
         } catch (ConfigurationNotFoundException | InvalidSpecificationException cause) {
-            throw new InvalidSettingException(specification, specification.getSetting(field), cause);
+            Specification.Setting setting = new Specification.Setting(field, MapSpecification.create(specification, field));
+            if (((Specification) setting.getValue()).iterator().hasNext()) {
+                throw new InvalidSettingException(specification, setting, cause);
+            } else {
+                throw new SettingNotFoundException(specification, field, cause);
+            }
         }
     }
 
@@ -154,8 +159,25 @@ public final class Specifications {
                     parseSpecification(specification, add(field, "settings")),
                     context);
         } catch (ConfigurationNotFoundException | InvalidSpecificationException cause) {
-            throw new InvalidSettingException(specification, specification.getSetting(field), cause);
+            Specification.Setting setting = new Specification.Setting(field, MapSpecification.create(specification, field));
+            if (((Specification) setting.getValue()).iterator().hasNext()) {
+                throw new InvalidSettingException(specification, setting, cause);
+            } else {
+                throw new SettingNotFoundException(specification, field, cause);
+            }
         }
+    }
+
+    public static String toString(Specification specification) {
+        if (specification == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder(specification.getClass().getName()).append("{");
+        for (Specification.Setting setting : specification) {
+            sb.append(Settings.toString(setting.getField())).append('=').append(setting.getValue());
+        }
+        sb.append('}');
+        return sb.toString();
     }
 
     private static List<String> add(List<String> list, String value) {
