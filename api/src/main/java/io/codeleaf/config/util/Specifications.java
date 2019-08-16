@@ -26,7 +26,8 @@ public final class Specifications {
     }
 
     public static String parseString(Specification specification, List<String> field) throws SettingNotFoundException {
-        return Objects.toString(specification.getValue(field));
+        Object value = specification.getValue(field);
+        return value == null ? null : Objects.toString(value);
     }
 
     public static int parseInt(Specification specification, String... field) throws SettingNotFoundException, InvalidSettingException {
