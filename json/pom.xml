@@ -14,7 +14,7 @@
     <description>Specification loader for json files</description>
 
     <properties>
-        <jackson.version>2.9.9.2</jackson.version>
+        <jackson.version>2.9.10.8</jackson.version>
     </properties>
 
     <dependencies>
