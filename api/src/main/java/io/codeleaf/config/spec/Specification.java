@@ -1,6 +1,5 @@
 package io.codeleaf.config.spec;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -169,7 +168,7 @@ public interface Specification extends Iterable<Specification.Setting> {
     /**
      * Represents a setting within a specification.
      */
-    class Setting implements Serializable {
+    class Setting {
 
         private final List<String> field;
         private final Object value;

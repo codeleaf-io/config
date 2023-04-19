@@ -1,14 +1,14 @@
 package io.codeleaf.config.json;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.codeleaf.config.spec.Specification;
 import io.codeleaf.config.spec.SpecificationFormatException;
 import io.codeleaf.config.spec.SpecificationNotFoundException;
 import io.codeleaf.config.spec.impl.MapSpecification;
 import io.codeleaf.config.spec.spi.SpecificationLoader;
 import io.codeleaf.config.util.ConfigDirectory;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author tvburger@gmail.com
  * @see SpecificationLoader
  * @see MapSpecification
- * @see ObjectMapper
+ * @see Jsonb
  * @since 0.1.0
  */
 public final class JsonFileLoader implements SpecificationLoader {
@@ -29,11 +29,11 @@ public final class JsonFileLoader implements SpecificationLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFileLoader.class);
 
     private final File parentPath;
-    private final ObjectMapper objectMapper;
+    private final Jsonb jsonb;
 
-    private JsonFileLoader(File parentPath, ObjectMapper objectMapper) {
+    private JsonFileLoader(File parentPath, Jsonb jsonb) {
         this.parentPath = parentPath;
-        this.objectMapper = objectMapper;
+        this.jsonb = jsonb;
     }
 
     /**
@@ -62,9 +62,9 @@ public final class JsonFileLoader implements SpecificationLoader {
 
     private Specification doParseSpecification(InputStream in, String specificationName) throws IOException, SpecificationFormatException {
         try {
-            Map<?, ?> map = objectMapper.readValue(in, Map.class);
+            Map<?, ?> map = jsonb.fromJson(in, Map.class);
             return MapSpecification.create(MapSpecification.normalize(map));
-        } catch (JsonParseException | JsonMappingException | IllegalArgumentException cause) {
+        } catch (JsonbException | IllegalArgumentException cause) {
             LOGGER.debug("Specification loading error: " + cause.getMessage());
             throw new SpecificationFormatException(specificationName, cause);
         }
@@ -84,7 +84,7 @@ public final class JsonFileLoader implements SpecificationLoader {
         return file;
     }
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final Jsonb JSONB = JsonbBuilder.create();
 
     /**
      * Constructs a new instance that reads from the default parent directory.
@@ -92,7 +92,7 @@ public final class JsonFileLoader implements SpecificationLoader {
      * @see ConfigDirectory#getDefaultDir()
      */
     public JsonFileLoader() {
-        this(ConfigDirectory.getDefaultDir(), MAPPER);
+        this(ConfigDirectory.getDefaultDir(), JSONB);
     }
 
     /**
@@ -104,6 +104,6 @@ public final class JsonFileLoader implements SpecificationLoader {
      */
     public static JsonFileLoader create(File parentPath) {
         ConfigDirectory.requireAccessibleDirectory(parentPath);
-        return new JsonFileLoader(parentPath, MAPPER);
+        return new JsonFileLoader(parentPath, JSONB);
     }
 }

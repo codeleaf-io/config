@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.codeleaf.config</groupId>
         <artifactId>config</artifactId>
-        <version>0.1.0</version>
+        <version>0.9.0</version>
     </parent>
 
     <artifactId>config-api</artifactId>
@@ -25,9 +25,9 @@
             <version>${leaf-common.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <groupId>io.codeleaf.common</groupId>
+            <artifactId>common-libs-logging</artifactId>
+            <version>${leaf-common.version}</version>
         </dependency>
     </dependencies>
 
